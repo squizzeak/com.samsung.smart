@@ -8,6 +8,12 @@ Searching for the TV(s) might take up to 30 seconds.  If the TV is not found, th
 
 To be able to turn the TV on, it must support wake-on-lan / wake-on-wireless.
 
+## Current scope
+
+This fork now supports only the `Samsung` device for TVs that expose the modern API on port `8001`.
+
+`Samsung Encrypted` was removed because its critical dependency (`@balmli/homey-samsung-encryption`) was hosted on a password-protected JFrog Artifactory registry that could not be fetched without credentials, making `npm install` fail from a clean checkout. `Samsung Legacy` was then removed as well because, once the encrypted path was gone and the only needed target was the modern Samsung device, keeping the additional legacy-only driver no longer added enough value to justify the extra code, manifest, flow, CLI, and test surface.
+
 ## Device: Samsung
 
 For supported TVs that respond to `http://TV-IP-ADDRESS:8001/api/v2/`.
@@ -103,7 +109,7 @@ To be able to turn off 'The Frame', enable this.
 
 Interval between each time the status of the TV (on / off) is checked, in seconds.
 
-A value lower than 10 seconds will disable the polling.
+Set this to `0` to disable polling. Any positive value is allowed, including `1` for one-second polling.
 
 #### Maximum volume level
 
