@@ -1,6 +1,5 @@
 import {DeviceSettings} from "../../lib/types";
 import {BaseDevice} from "../../lib/BaseDevice";
-import {SmartThingsClientImpl} from "../../lib/SmartThings";
 import {SamsungClientImpl} from "./SamsungClient";
 
 module.exports = class SamsungDevice extends BaseDevice {
@@ -22,14 +21,7 @@ module.exports = class SamsungDevice extends BaseDevice {
             homeyIpUtil: this.homeyIpUtil,
             logger: this.logger
         });
-        this.smartThingsClient = new SmartThingsClientImpl({
-            device: this,
-            config: this.config,
-            logger: this.logger
-        });
-
         this.schedulePowerStatePolling(1);
-        await this.initSmartThings();
         this.logger.verbose(`Device initialized`, this.getData());
     }
 
@@ -67,11 +59,6 @@ module.exports = class SamsungDevice extends BaseDevice {
                     await this.config.setSetting(DeviceSettings.token, undefined).catch((err: any) => this.logger.error(err));
                 }, 1000);
             }
-        }
-        if (changedKeys.includes('smartthings') || changedKeys.includes('smartthings_token')) {
-            this.homey.setTimeout(() => {
-                this.initSmartThings();
-            }, 1000);
         }
     }
 
@@ -127,12 +114,4 @@ module.exports = class SamsungDevice extends BaseDevice {
             this.logger.info('refreshAppList ERROR', err);
         }
     }
-
-    // SmartThings
-
-    isSmartThingsEnabled() {
-        const settings = this.getSettings();
-        return settings.smartthings && settings.smartthings_token && settings.smartthings_token.length > 0;
-    }
-
 };

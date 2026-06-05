@@ -71,11 +71,6 @@ class SamsungSmartApp extends Homey.App {
                 return args.device.samsungClient.launchBrowser(args.url);
             });
 
-        this.homey.flow.getActionCard('set_input_source')
-            .registerRunListener(args => args.device.setStInputSource(args.input_source.id))
-            .getArgument('input_source')
-            .registerAutocompleteListener((query, args) => args.device.onInputSourceAutocomplete(query, args));
-
         this.homey.flow.getActionCard('set_power_state')
             .registerRunListener(args => args.device.setPowerState(args.power_state === 'on'));
     }

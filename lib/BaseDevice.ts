@@ -6,8 +6,6 @@ import {HomeyIpUtil, HomeyIpUtilImpl} from "./HomeyIpUtil";
 import {SamsungClient} from "./SamsungBase";
 import {UPnPClient, UPnPClientImpl} from "./UPnPClient";
 import {DeviceSettings} from "./types";
-import {SmartThingsClient} from "./SmartThings";
-
 import {keycodes} from './keys';
 
 export class BaseDevice extends Homey.Device {
@@ -18,7 +16,6 @@ export class BaseDevice extends Homey.Device {
     config!: SamsungConfig;
     homeyIpUtil!: HomeyIpUtil;
     samsungClient!: SamsungClient;
-    smartThingsClient!: SmartThingsClient;
     upnpClient!: UPnPClient;
     turning_onoff_process: boolean | undefined = undefined;
     onOffPollingTimeout?: NodeJS.Timeout;
@@ -133,26 +130,6 @@ export class BaseDevice extends Homey.Device {
             if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
             return 0;
         }));
-    }
-
-    async onInputSourceAutocomplete(query: string, args: any): Promise<FlowCard.ArgumentAutocompleteResults> {
-        let inputSources = await this.smartThingsClient.getStInputSources();
-        return Promise.resolve((inputSources === undefined ? [] : inputSources).map((is: any) => {
-            return {
-                id: is,
-                name: is
-            };
-        }).filter((result: any) => {
-            return result.name.toLowerCase().indexOf(query.toLowerCase()) > -1;
-        }).sort((a: { name: string; }, b: { name: string; }) => {
-            if (a.name.toLowerCase() < b.name.toLowerCase()) return -1;
-            if (a.name.toLowerCase() > b.name.toLowerCase()) return 1;
-            return 0;
-        }));
-    }
-
-    setStInputSource(input_source: string) {
-        return this.smartThingsClient.setStInputSource(input_source);
     }
 
     async setPowerState(powerState: boolean): Promise<void> {
@@ -416,26 +393,6 @@ export class BaseDevice extends Homey.Device {
 
     async onDeviceOnline() {
         throw new Error('unimplemented');
-    }
-
-    // SmartThings
-
-    async initSmartThings() {
-        this.homey.setTimeout(async () => {
-            this.smartThingsClient.clearStClient();
-            const stEnabled = this.isSmartThingsEnabled();
-            if (stEnabled) {
-                try {
-                    await this.smartThingsClient.getStInputSources();
-                } catch (err) {
-                    this.logger.info('Fetching ST input sources failed', err);
-                }
-            }
-        }, 2000);
-    }
-
-    isSmartThingsEnabled() {
-        return false;
     }
 
     async shouldFetchPowerState() {

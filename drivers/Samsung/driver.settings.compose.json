@@ -46,21 +46,5 @@
         "id": "delay_channel_keys"
       }
     ]
-  },
-  {
-    "type": "group",
-    "label": {
-      "en": "SmartThings"
-    },
-    "children": [
-      {
-        "$extends": "smartthings",
-        "id": "smartthings"
-      },
-      {
-        "$extends": "smartthings_token",
-        "id": "smartthings_token"
-      }
-    ]
   }
 ]

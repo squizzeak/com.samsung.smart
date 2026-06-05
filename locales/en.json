@@ -70,14 +70,7 @@
     },
     "app": {
       "start_youtube": "Unable to start YouTube (__message__)."
-    },
-    "smartthings": {
-      "not_enabled": "The SmartThings API is not enabled in Adv. settings.",
-      "no_token": "The SmartThings API token is not set in Adv. settings.",
-      "incorrect_token": "The API token must be set correctly.",
-      "failed_fetching_devices": "Unable to fetch devices (__statusCode__ __statusMessage__)",
-      "no_tvs": "Found no TVs with the SmartThings API.",
-      "failed_changing_input_source": "Changing input source failed: __message__ (__statusCode__ __statusMessage__)"
     }
+
   }
 }

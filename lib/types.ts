@@ -12,8 +12,6 @@ export enum DeviceSettings {
     poll_interval = "poll_interval",
     power_state = "power_state",
     power_state_polling = "power_state_polling",
-    smartthings = "smartthings",
-    smartthings_token = "smartthings_token",
     token = "token",
     tokenAuthSupport = "tokenAuthSupport",
     modelClass = "modelClass",

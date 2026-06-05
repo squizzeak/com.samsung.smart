@@ -14,6 +14,8 @@ This fork now supports only the `Samsung` device for TVs that expose the modern 
 
 `Samsung Encrypted` was removed because its critical dependency (`@balmli/homey-samsung-encryption`) was hosted on a password-protected JFrog Artifactory registry that could not be fetched without credentials, making `npm install` fail from a clean checkout. `Samsung Legacy` was then removed as well because, once the encrypted path was gone and the only needed target was the modern Samsung device, keeping the additional legacy-only driver no longer added enough value to justify the extra code, manifest, flow, CLI, and test surface.
 
+`SmartThings API` integration has been removed because Samsung changed personal access token policy so that tokens expire after 24 hours, rendering them unusable for persistent home automation scenarios.
+
 ## Device: Samsung
 
 For supported TVs that respond to `http://TV-IP-ADDRESS:8001/api/v2/`.
@@ -129,17 +131,7 @@ The delay in milliseconds between each key is sent, for the 'Change channel' - a
 
 Default is 1250 ms.
 
-#### SmartThings API
 
-To use the SmartThings API, your TV must be logged into your Samsung account.  
-
-Go to https://account.smartthings.com/tokens to generate a token with device access.
-
-Go to advanced settings for the Samsung device, enable SmartThings API and enter the token.
-
-This will enable the 'Set input source' - action.
-
-## Feedback:
 
 Please report issues by visiting the communtity topic: https://community.homey.app/t/10019
 

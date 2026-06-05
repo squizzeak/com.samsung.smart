@@ -240,32 +240,6 @@
         ]
       },
       {
-        "id": "set_input_source",
-        "title": {
-          "en": "Set input source"
-        },
-        "titleFormatted": {
-          "en": "Set input source to [[input_source]]"
-        },
-        "hint": {
-          "en": "Use this action to select the input source (HDMI1, HDMI2, etc.). It requires that the SmartThings API has been enabled in Adv. settings."
-        },
-        "args": [
-          {
-            "type": "device",
-            "name": "device",
-            "filter": "driver_id=Samsung"
-          },
-          {
-            "name": "input_source",
-            "type": "autocomplete",
-            "placeholder": {
-              "en": "Input source..."
-            }
-          }
-        ]
-      },
-      {
         "id": "set_power_state",
         "title": {
           "en": "Set power state"
@@ -467,36 +441,6 @@
                 "en": "Delay between channel keys (ms)"
               },
               "value": 1250
-            }
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "SmartThings"
-          },
-          "children": [
-            {
-              "id": "smartthings",
-              "type": "checkbox",
-              "label": {
-                "en": "SmartThings API"
-              },
-              "value": false,
-              "hint": {
-                "en": "Check this to enable the SmartThings API.  Your TV must be logged on to your Samsung account."
-              }
-            },
-            {
-              "id": "smartthings_token",
-              "type": "text",
-              "label": {
-                "en": "API Token"
-              },
-              "value": "",
-              "hint": {
-                "en": "Obtain an API key from https://account.smartthings.com/tokens."
-              }
             }
           ]
         }
