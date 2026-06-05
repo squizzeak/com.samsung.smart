@@ -264,7 +264,11 @@ export class SamsungBase implements SamsungClient {
         }
         this.logger.info('wake:', mac);
         return new Promise((resolve, reject) => {
-            wol.wake(mac, function (error: any) {
+            wol.wake(mac, {
+                address: '255.255.255.255',
+                num_packets: 10,
+                interval: 250,
+            }, function (error: any) {
                 if (error) {
                     self.logger.info('wake ERROR', error);
                     reject(error);

@@ -12,6 +12,8 @@ import {keycodes} from './keys';
 
 export class BaseDevice extends Homey.Device {
 
+    private static readonly WAKE_AFTER_POWEROFF_DELAY_MS = 15000;
+
     logger: any;
     config!: SamsungConfig;
     homeyIpUtil!: HomeyIpUtil;
@@ -23,6 +25,7 @@ export class BaseDevice extends Homey.Device {
     onOffCheckTimeout?: NodeJS.Timeout;
     powerStatePollingTimeout?: NodeJS.Timeout;
     private wakeRetries: number = 0;
+    private lastPowerOffAt?: number;
     private deleted?: boolean;
 
     async initDevice(deviceType: string) {
@@ -207,6 +210,19 @@ export class BaseDevice extends Homey.Device {
         } catch (err) {
             this.logger.info(`Unable to find MAC address for IP address: ${ipaddress}`);
         }
+
+        try {
+            const info = await this.samsungClient.getInfo(ipaddress);
+            const mac = info?.device?.wifiMac;
+            if (mac && mac.indexOf(':') >= 0) {
+                this.logger.info(`Found MAC address from device info: ${ipaddress} -> ${mac}`);
+                await this.config.setSetting(DeviceSettings.mac_address, mac).catch((err: any) => this.logger.error(err));
+                return true;
+            }
+        } catch (err) {
+            this.logger.info(`Unable to fetch MAC address from device info: ${ipaddress}`);
+        }
+
         return false;
     }
 
@@ -222,9 +238,17 @@ export class BaseDevice extends Homey.Device {
             this.scheduleOnOffTimeout();
             this.turning_onoff_process = onOff;
             if (onOff) {
-                this.wakeRetries = 5;
-                await this.samsungClient.wake();
+                this.wakeRetries = 10;
+                const elapsedSincePowerOff = this.lastPowerOffAt ? Date.now() - this.lastPowerOffAt : undefined;
+                const wakeDelay = elapsedSincePowerOff === undefined ? 0 : Math.max(0, BaseDevice.WAKE_AFTER_POWEROFF_DELAY_MS - elapsedSincePowerOff);
+                if (wakeDelay > 0) {
+                    this.logger.info(`turnOnOff: delaying wake for ${wakeDelay} ms after power off`);
+                    void this.delayedWake(wakeDelay);
+                } else {
+                    await this.samsungClient.wake();
+                }
             } else {
+                this.lastPowerOffAt = Date.now();
                 await this.samsungClient.turnOff();
             }
             this.logger.info('turnOnOff: in progress: ' + (onOff ? 'on' : 'off'));
@@ -233,6 +257,20 @@ export class BaseDevice extends Homey.Device {
             this.clearOnOffPolling();
             this.clearOnOffTimeout();
             throw err;
+        }
+    }
+
+    async delayedWake(wakeDelay: number) {
+        try {
+            await this._delay(wakeDelay);
+            if (this.turning_onoff_process) {
+                await this.samsungClient.wake();
+            }
+        } catch (err) {
+            this.logger.info('delayedWake: failed', err);
+            this.turning_onoff_process = undefined;
+            this.clearOnOffPolling();
+            this.clearOnOffTimeout();
         }
     }
 
@@ -278,7 +316,7 @@ export class BaseDevice extends Homey.Device {
         }
     }
 
-    // 30 seconds timeout for on / off polling
+    // 45 seconds timeout for on / off polling
 
     clearOnOffTimeout() {
         if (this.onOffCheckTimeout) {
@@ -289,7 +327,7 @@ export class BaseDevice extends Homey.Device {
 
     scheduleOnOffTimeout() {
         this.clearOnOffTimeout();
-        this.onOffCheckTimeout = this.homey.setTimeout(this.onOnOffTimeout.bind(this), 30000);
+        this.onOffCheckTimeout = this.homey.setTimeout(this.onOnOffTimeout.bind(this), 45000);
     }
 
     onOnOffTimeout() {
@@ -317,8 +355,8 @@ export class BaseDevice extends Homey.Device {
     schedulePowerStatePolling(polling_interval?: number) {
         this.clearPowerStatePolling();
         const settings = this.getSettings();
-        if (polling_interval || settings.poll_interval >= 10) {
-            const pollInterval = polling_interval || (settings.poll_interval || 10);
+        const pollInterval = polling_interval ?? settings.poll_interval ?? 10;
+        if (pollInterval > 0) {
             this.powerStatePollingTimeout = this.homey.setTimeout(this.doPowerStatePolling.bind(this), pollInterval * 1000);
         }
     }
