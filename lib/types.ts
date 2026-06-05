@@ -16,15 +16,7 @@ export enum DeviceSettings {
     smartthings_token = "smartthings_token",
     token = "token",
     tokenAuthSupport = "tokenAuthSupport",
-
-    // Samsung Encrypted
     modelClass = "modelClass",
-    duid = "duid",
-    identityAesKey = "identityAesKey",
-    identitySessionId = "identitySessionId",
-
-    // Samsung Legacy
-    mac_address_homey = "mac_address_homey",
 }
 
 export interface HomeyDevice {

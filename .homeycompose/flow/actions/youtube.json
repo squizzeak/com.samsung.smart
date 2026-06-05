@@ -13,7 +13,7 @@
     {
       "type": "device",
       "name": "device",
-      "filter": "driver_id=Samsung|SamsungEncrypted"
+      "filter": "driver_id=Samsung"
     },
     {
       "name": "videoId",

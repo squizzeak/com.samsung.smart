@@ -10,7 +10,7 @@ To be able to turn the TV on, it must support wake-on-lan / wake-on-wireless.
 
 ## Device: Samsung
 
-For newer TVs, that respond to http://TV-IP-ADDRESS:8001/api/v2/
+For supported TVs that respond to `http://TV-IP-ADDRESS:8001/api/v2/`.
 
 #### Triggers
 
@@ -44,70 +44,6 @@ For newer TVs, that respond to http://TV-IP-ADDRESS:8001/api/v2/
 - Send list of keys
 - Set power state
 
-## Device: Samsung (encrypted)
-
-For H, HU, J, JU and JS models, that respond to http://TV-IP-ADDRESS:8001/ms/1.0/
-
-#### Triggers
-
-- TV turned on
-- TV turned off
-- Volume changed (requires UPnP support)
-
-#### Conditions
-
-- Is on / off
-- Is app running (J/JU/JS-models)
-
-#### Actions
-
-- Turn on
-- Turn off
-- Toggle on or off
-- Mute the volume
-- Unmute the volume
-- Turn the volume up
-- Turn the volume down
-- Set volume to (requires UPnP support)
-- One channel up
-- One channel down
-- Change channel
-- Launch app (J/JU/JS-models)
-- Close app (J/JU/JS-models)
-- Launch video on YouTube (J/JU/JS-models)
-- Send key
-- Send list of keys
-
-## Device: Samsung (legacy)
-
-For older TVs, that respond to port 55000.
-
-#### Triggers
-
-- TV turned on
-- TV turned off
-- Volume changed (requires UPnP support)
-
-#### Conditions
-
-- Is on / off
-
-#### Actions
-
-- Turn on
-- Turn off
-- Toggle on or off
-- Mute the volume
-- Unmute the volume
-- Turn the volume up
-- Turn the volume down
-- Set volume to (requires UPnP support)
-- One channel up
-- One channel down
-- Change channel
-- Send key
-- Send list of keys
-
 ## Details about actions:
 
 #### Change channel
@@ -136,7 +72,7 @@ To send the same key several times, add a ```*X``` after the key, where X is the
 ```KEY_16_9,KEY_VOLUP*10,2500,KEY_PLAY```
 
 
-#### Launch video on YouTube (Samsung, Samsung Encrypted)
+#### Launch video on YouTube
 
 To use the 'Launch video on YouTube' action, the YouTube _video id_ must be provided, which is a 11 character long string.  The video id for this link on YouTube:
 
@@ -151,9 +87,7 @@ is ```aqz-KE-bpKQ```
 
 The IP address of the TV.
 
-Can be updated manually if the TV was not found or if the IP address of the TV has changed. 
-
-For the "Samsung (encrypted)" - device, it is not possible to change the IP address.
+Can be updated manually if the TV was not found or if the IP address of the TV has changed.
  
 #### Secure connection (Samsung)
 

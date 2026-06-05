@@ -1,7 +1,5 @@
 import Homey, {FlowCard} from 'homey';
 
-import macaddress from "macaddress";
-
 import {Logger} from "./Logger";
 import {SamsungConfig, SamsungConfigImpl} from "./SamsungConfig";
 import {HomeyIpUtil, HomeyIpUtilImpl} from "./HomeyIpUtil";
@@ -44,7 +42,6 @@ export class BaseDevice extends Homey.Device {
         this.upnpClient.on('available', this.onUPnPAvailable.bind(this));
 
         await this.updateMacAddress(this.config.getSetting(DeviceSettings.ipaddress));
-        await this.setMacAddressHomey();
     }
 
     async initLogger(deviceType: string) {
@@ -53,22 +50,6 @@ export class BaseDevice extends Homey.Device {
         if (modelName) {
             this.logger.setTags({modelName});
         }
-    }
-
-    async setMacAddressHomey(): Promise<any> {
-        let self = this;
-        return new Promise((resolve, reject) => {
-            macaddress.one(function (err: any, mac: string) {
-                if (err) {
-                    self.logger.error(err);
-                    reject(err);
-                } else {
-                    self.config.setSetting(DeviceSettings.mac_address_homey, mac).catch((err: any) => self.logger.error(err));
-                    self.logger.info(`Found MAC address for Homey -> ${mac}`);
-                    resolve(mac);
-                }
-            });
-        });
     }
 
     async migrate() {
@@ -173,12 +154,11 @@ export class BaseDevice extends Homey.Device {
 
     async setPowerState(powerState: boolean): Promise<void> {
         try {
-            const power_state_polling = false;
-            await this.config.setSetting(DeviceSettings.power_state_polling, power_state_polling).catch((err: any) => this.logger.error(err));
-            await this.setCapabilityValue('onoff', powerState).catch((err: any) => this.logger.error(err));
             this.logger.info('setPowerState', powerState);
+            await this.turnOnOff(powerState);
         } catch (err) {
             this.logger.info('setPowerState ERROR', err);
+            throw err;
         }
     }
 
@@ -354,7 +334,8 @@ export class BaseDevice extends Homey.Device {
                 return;
             }
 
-            const onOff = this.getSetting(DeviceSettings.power_state_polling) === false ?
+            const powerStatePollingDisabled = this.getSetting(DeviceSettings.power_state_polling) === false;
+            const onOff = powerStatePollingDisabled ?
                 this.getCapabilityValue('onoff') :
                 await this.isDeviceOnline();
 
@@ -379,7 +360,6 @@ export class BaseDevice extends Homey.Device {
         const pollMethods = this.pollMethods(timeout).filter(pm => !!pm);
         const pollResults = await Promise.all(pollMethods.map(pm => pm.method));
         const onOff = pollResults.includes(true) ? true : pollResults.includes(false) ? false : undefined;
-        this.logger.verbose('isDeviceOnline', pollMethods.map(pm => pm.id), pollResults, onOff);
         return onOff;
     }
 

@@ -7,8 +7,6 @@ import {SamsungClientImpl} from "../drivers/Samsung/SamsungClient";
 
 import {settings} from "./index";
 import {DeviceSettings, HomeyDevice} from "../lib/types";
-import {SamsungEncryptedClientImpl} from "../drivers/SamsungEncrypted/SamsungEncryptedClient";
-import {SamsungLegacyClientImpl} from "../drivers/SamsungLegacy/SamsungLegacyClient";
 import {SmartThingsClient, SmartThingsClientImpl} from "../lib/SmartThings";
 import {HomeyDeviceMock} from "./HomeyDevice";
 
@@ -26,7 +24,7 @@ export const getConfig = (): SamsungConfig => {
 }
 
 export const getClient = async () => {
-    return await settings.get("client");
+    return await settings.get("client") || "Samsung";
 };
 
 export const setClient = async (client: string) => {
@@ -46,8 +44,6 @@ export const setSetting = async (key: DeviceSettings, value: any) => {
 }
 
 export const initSamsungClient = async () => {
-    const client = await getClient();
-
     // @ts-ignore
     let logger = new Logger({
         logFunc: console.log,
@@ -62,40 +58,16 @@ export const initSamsungClient = async () => {
         console.log(event);
     });
 
-    if (client === "Samsung") {
-        samsungClient = new SamsungClientImpl({
-            config,
-            port: 8001,
-            connectionTimeout: 10,
-            homeyIpUtil,
-            logger
-        });
-        getConfig().setSetting(DeviceSettings.ipaddress, await getSetting(DeviceSettings.ipaddress));
-        getConfig().setSetting(DeviceSettings.tokenAuthSupport, await getSetting(DeviceSettings.tokenAuthSupport));
-        getConfig().setSetting(DeviceSettings.token, await getSetting(DeviceSettings.token));
-
-    } else if (client === "Samsung Encrypted") {
-        samsungClient = new SamsungEncryptedClientImpl({
-            config,
-            port: 8001,
-            homeyIpUtil,
-            logger
-        });
-        getConfig().setSetting(DeviceSettings.ipaddress, await getSetting(DeviceSettings.ipaddress));
-        getConfig().setSetting(DeviceSettings.modelName, await getSetting(DeviceSettings.modelName));
-        getConfig().setSetting(DeviceSettings.modelClass, await getSetting(DeviceSettings.modelClass));
-        getConfig().setSetting(DeviceSettings.duid, await getSetting(DeviceSettings.duid));
-        getConfig().setSetting(DeviceSettings.identitySessionId, await getSetting(DeviceSettings.identitySessionId));
-        getConfig().setSetting(DeviceSettings.identityAesKey, await getSetting(DeviceSettings.identityAesKey));
-
-    } else if (client === "Samsung Legacy") {
-        samsungClient = new SamsungLegacyClientImpl({
-            config,
-            port: 55000,
-            homeyIpUtil,
-            logger
-        });
-    }
+    samsungClient = new SamsungClientImpl({
+        config,
+        port: 8001,
+        connectionTimeout: 10,
+        homeyIpUtil,
+        logger
+    });
+    getConfig().setSetting(DeviceSettings.ipaddress, await getSetting(DeviceSettings.ipaddress));
+    getConfig().setSetting(DeviceSettings.tokenAuthSupport, await getSetting(DeviceSettings.tokenAuthSupport));
+    getConfig().setSetting(DeviceSettings.token, await getSetting(DeviceSettings.token));
 
     return samsungClient;
 }

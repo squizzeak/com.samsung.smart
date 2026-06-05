@@ -6,7 +6,7 @@ const {Select} = require("enquirer");
 import {Log} from "../index";
 import {setClient} from "../api";
 
-export const clients = ["Samsung", "Samsung Encrypted", "Samsung Legacy"];
+export const clients = ["Samsung"];
 
 type Options = {
     client: string | undefined;

@@ -60,7 +60,7 @@
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted"
+            "filter": "driver_id=Samsung"
           },
           {
             "name": "app_id",
@@ -83,7 +83,7 @@
           {
             "name": "device",
             "type": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted|SamsungLegacy"
+            "filter": "driver_id=Samsung"
           }
         ]
       }
@@ -127,7 +127,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted|SamsungLegacy"
+            "filter": "driver_id=Samsung"
           },
           {
             "name": "channel",
@@ -156,7 +156,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted"
+            "filter": "driver_id=Samsung"
           },
           {
             "name": "app_id",
@@ -182,7 +182,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted"
+            "filter": "driver_id=Samsung"
           },
           {
             "name": "app_id",
@@ -205,7 +205,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted|SamsungLegacy"
+            "filter": "driver_id=Samsung"
           },
           {
             "name": "key",
@@ -228,7 +228,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted|SamsungLegacy"
+            "filter": "driver_id=Samsung"
           },
           {
             "name": "keys1",
@@ -320,7 +320,7 @@
           {
             "type": "device",
             "name": "device",
-            "filter": "driver_id=Samsung|SamsungEncrypted"
+            "filter": "driver_id=Samsung"
           },
           {
             "name": "videoId",
@@ -497,231 +497,6 @@
               "hint": {
                 "en": "Obtain an API key from https://account.smartthings.com/tokens."
               }
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "icon": "/drivers/SamsungEncrypted/assets/icon.svg",
-      "images": {
-        "large": "/drivers/SamsungEncrypted/assets/images/large.png",
-        "small": "/drivers/SamsungEncrypted/assets/images/small.png"
-      },
-      "class": "tv",
-      "capabilities": [
-        "onoff",
-        "volume_up",
-        "channel_up",
-        "volume_down",
-        "channel_down",
-        "volume_mute"
-      ],
-      "id": "SamsungEncrypted",
-      "name": {
-        "en": "Samsung (encrypted)"
-      },
-      "pair": [
-        {
-          "id": "ip_address"
-        },
-        {
-          "id": "pin_wait",
-          "template": "loading"
-        },
-        {
-          "id": "set_pin_code",
-          "template": "pincode",
-          "options": {
-            "type": "number"
-          },
-          "navigation": {
-            "next": "list_devices"
-          }
-        },
-        {
-          "id": "list_devices",
-          "template": "list_devices",
-          "navigation": {
-            "next": "add_my_devices"
-          }
-        },
-        {
-          "id": "add_my_devices",
-          "template": "add_devices"
-        }
-      ],
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "General settings"
-          },
-          "children": [
-            {
-              "id": "ipaddress",
-              "type": "label",
-              "label": {
-                "en": "IP address"
-              },
-              "value": "",
-              "hint": {
-                "en": "Reserve an IP address for the TV in your network / Wi-Fi router. "
-              }
-            },
-            {
-              "id": "poll_interval",
-              "type": "number",
-              "min": 0,
-              "max:": 1000,
-              "step": 1,
-              "label": {
-                "en": "Polling interval for TV status (s)"
-              },
-              "value": 10
-            },
-            {
-              "id": "max_volume",
-              "type": "number",
-              "label": {
-                "en": "Max volume"
-              },
-              "value": 30,
-              "min": 1,
-              "max": 100,
-              "hint": {
-                "en": "Max. volume level"
-              }
-            }
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "Timing"
-          },
-          "children": [
-            {
-              "id": "delay_keys",
-              "type": "number",
-              "min": 1,
-              "max:": 5000,
-              "step": 1,
-              "label": {
-                "en": "Delay between keys (ms)"
-              },
-              "value": 100
-            },
-            {
-              "id": "delay_channel_keys",
-              "type": "number",
-              "min": 1,
-              "max:": 5000,
-              "step": 1,
-              "label": {
-                "en": "Delay between channel keys (ms)"
-              },
-              "value": 1250
-            }
-          ]
-        }
-      ]
-    },
-    {
-      "icon": "/drivers/SamsungLegacy/assets/icon.svg",
-      "images": {
-        "large": "/drivers/SamsungLegacy/assets/images/large.png",
-        "small": "/drivers/SamsungLegacy/assets/images/small.png"
-      },
-      "class": "tv",
-      "capabilities": [
-        "onoff",
-        "volume_up",
-        "channel_up",
-        "volume_down",
-        "channel_down",
-        "volume_mute"
-      ],
-      "id": "SamsungLegacy",
-      "name": {
-        "en": "Samsung (legacy)"
-      },
-      "pair": [
-        {
-          "id": "ip_address"
-        }
-      ],
-      "settings": [
-        {
-          "type": "group",
-          "label": {
-            "en": "General settings"
-          },
-          "children": [
-            {
-              "id": "ipaddress",
-              "type": "text",
-              "label": {
-                "en": "IP address"
-              },
-              "value": "",
-              "hint": {
-                "en": "Reserve an IP address for the TV in your network / Wi-Fi router. "
-              }
-            },
-            {
-              "id": "poll_interval",
-              "type": "number",
-              "min": 0,
-              "max:": 1000,
-              "step": 1,
-              "label": {
-                "en": "Polling interval for TV status (s)"
-              },
-              "value": 10
-            },
-            {
-              "id": "max_volume",
-              "type": "number",
-              "label": {
-                "en": "Max volume"
-              },
-              "value": 30,
-              "min": 1,
-              "max": 100,
-              "hint": {
-                "en": "Max. volume level"
-              }
-            }
-          ]
-        },
-        {
-          "type": "group",
-          "label": {
-            "en": "Timing"
-          },
-          "children": [
-            {
-              "id": "delay_keys",
-              "type": "number",
-              "min": 1,
-              "max:": 5000,
-              "step": 1,
-              "label": {
-                "en": "Delay between keys (ms)"
-              },
-              "value": 100
-            },
-            {
-              "id": "delay_channel_keys",
-              "type": "number",
-              "min": 1,
-              "max:": 5000,
-              "step": 1,
-              "label": {
-                "en": "Delay between channel keys (ms)"
-              },
-              "value": 1250
             }
           ]
         }
