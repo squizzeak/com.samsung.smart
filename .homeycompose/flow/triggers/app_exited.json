@@ -1,0 +1,42 @@
+{
+  "id": "app_exited",
+  "title": {
+    "en": "App exited"
+  },
+  "titleFormatted": {
+    "en": "[[app_id]] exited"
+  },
+  "hint": {
+    "en": "This trigger fires when the selected app stops being visible on the TV."
+  },
+  "tokens": [
+    {
+      "name": "app_name",
+      "type": "string",
+      "title": {
+        "en": "Application name"
+      }
+    },
+    {
+      "name": "app_id",
+      "type": "string",
+      "title": {
+        "en": "Application ID"
+      }
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Samsung"
+    },
+    {
+      "name": "app_id",
+      "type": "autocomplete",
+      "placeholder": {
+        "en": "Select app..."
+      }
+    }
+  ]
+}

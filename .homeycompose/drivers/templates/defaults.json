@@ -11,6 +11,7 @@
     "channel_up",
     "volume_down",
     "channel_down",
-    "volume_mute"
+    "volume_mute",
+    "running_app"
   ]
 }

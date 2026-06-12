@@ -109,6 +109,11 @@ export interface SamsungClient {
     isAppRunning(app: any): Promise<boolean>;
 
     /**
+     * Get the currently running app on the TV.
+     */
+    getRunningApp(): Promise<any>;
+
+    /**
      * Launch an app on the TV.
      *
      * @param app
@@ -160,6 +165,8 @@ export class SamsungBase implements SamsungClient {
     searchTimeout?: NodeJS.Timeout;
     socket: any;
     socketTimeout?: NodeJS.Timeout;
+    _lastRunningApp: any;
+    _installedAppIds: Set<string>;
 
     constructor({device, config, port, connectionTimeout, homeyIpUtil, logger}: {
         device?: Device,
@@ -178,6 +185,7 @@ export class SamsungBase implements SamsungClient {
         this.homeyIpUtil = homeyIpUtil;
         this.logger = logger;
         this._apps = appCodes;
+        this._installedAppIds = new Set();
         this._commandQueue = new PQueue({concurrency: 1});
     }
 
@@ -251,6 +259,54 @@ export class SamsungBase implements SamsungClient {
 
     getListOfApps(): Promise<any> {
         throw new Error('unimplemented');
+    }
+
+    async getRunningApp(): Promise<any> {
+        const lastRunning = this._lastRunningApp;
+
+        if (lastRunning) {
+            try {
+                if (await this.isAppRunning(lastRunning)) {
+                    return lastRunning;
+                }
+            } catch (err) {
+                this.logger.verbose('getRunningApp: last running app check failed', err);
+            }
+        }
+
+        let toCheck = this._apps.filter((app: any) =>
+            (!lastRunning || lastRunning.appId !== app.appId) &&
+            this._installedAppIds.has(app.appId)
+        );
+
+        if (toCheck.length === 0) {
+            if (this._installedAppIds.size === 0) {
+                this.logger.verbose('getRunningApp: installed apps not yet loaded, skipping');
+                this._lastRunningApp = null;
+                return null;
+            }
+            this.logger.verbose('getRunningApp: no installed apps to check');
+            this._lastRunningApp = null;
+            return null;
+        }
+
+        const results = await Promise.allSettled(toCheck.map(async (app: any) => {
+            try {
+                return await this.isAppRunning(app) ? app : null;
+            } catch {
+                return null;
+            }
+        }));
+
+        const settled = results as any[];
+        const running = settled.find((r: any) => r.status === 'fulfilled' && r.value);
+        if (running) {
+            this._lastRunningApp = running.value;
+            return running.value;
+        }
+
+        this._lastRunningApp = null;
+        return null;
     }
 
     async wake(): Promise<void> {
@@ -371,13 +427,26 @@ export class SamsungBase implements SamsungClient {
     mergeApps(apps: any) {
         if (apps && apps.length > 0) {
             const curIds = new Set();
-            this._apps.map((a: any) => curIds.add(a.appId));
-            apps.filter((a: any) => !curIds.has(a.appId))
-                .map((a: any) => this._apps.push({
-                    name: a.name,
-                    appId: a.appId,
-                    dialId: ""
-                }));
+            const nameById = new Map();
+            this._apps.forEach((a: any) => {
+                curIds.add(a.appId);
+                nameById.set(a.appId, a);
+            });
+            for (const app of apps) {
+                if (!curIds.has(app.appId)) {
+                    this._apps.push({
+                        name: app.name,
+                        appId: app.appId,
+                        dialId: "",
+                    });
+                } else if (nameById.get(app.appId).name !== app.name) {
+                    const existing = nameById.get(app.appId);
+                    this.logger.verbose(`mergeApps: updating name "${existing.name}" → "${app.name}"`);
+                    existing.name = app.name;
+                }
+                this._installedAppIds.add(app.appId);
+            }
+            this.logger.verbose(`mergeApps: installed appIds tracked: ${this._installedAppIds.size}`);
         }
     }
 

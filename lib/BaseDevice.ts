@@ -18,6 +18,7 @@ export class BaseDevice extends Homey.Device {
     samsungClient!: SamsungClient;
     upnpClient!: UPnPClient;
     turning_onoff_process: boolean | undefined = undefined;
+    _prevRunningApp: any;
     onOffPollingTimeout?: NodeJS.Timeout;
     onOffCheckTimeout?: NodeJS.Timeout;
     powerStatePollingTimeout?: NodeJS.Timeout;
@@ -73,7 +74,11 @@ export class BaseDevice extends Homey.Device {
                     await this.setAvailable();
                 }
             }
-            await this.setStoreValue('version', 2);
+            if (!this.hasCapability('running_app')) {
+                await this.addCapability('running_app');
+                this.logger.info('Migration: added running_app');
+            }
+            await this.setStoreValue('version', 3);
         } catch (err) {
             this.logger.error('Migration failed', err);
         }
@@ -359,6 +364,9 @@ export class BaseDevice extends Homey.Device {
             }
             if (onOff !== undefined && onOff !== this.getCapabilityValue('onoff')) {
                 await this.setCapabilityValue('onoff', onOff).catch(err => this.logger.error(err));
+                if (!onOff && this.hasCapability('running_app')) {
+                    await this.setCapabilityValue('running_app', '').catch(err => this.logger.error(err));
+                }
             }
             if (onOff) {
                 this.logger.verbose('pollDevice: TV is on');
@@ -461,6 +469,44 @@ export class BaseDevice extends Homey.Device {
             }
         } catch (err) {
             this.logger.info('fetchState ERROR', err);
+        }
+    }
+
+    async refreshRunningApp() {
+        if (!this.hasCapability('running_app')) return;
+        try {
+            const prevAppName = this.getCapabilityValue('running_app') || '';
+            const app = await this.samsungClient.getRunningApp();
+            const appName = app ? app.name : '';
+
+            if (appName !== prevAppName) {
+                await this.setCapabilityValue('running_app', appName).catch(err => this.logger.error('Error setting running_app capability', err));
+                this.logger.verbose('refreshRunningApp: updated: ', appName);
+
+                if (prevAppName && this._prevRunningApp) {
+                    const appObj = { name: this._prevRunningApp.name, appId: this._prevRunningApp.appId, dialId: this._prevRunningApp.dialId || '' };
+                    this.homey.flow.getTriggerCard('app_exited')
+                        .trigger(this, { app_id: appObj, app_name: appObj.name })
+                        .catch(err => this.logger.error('Trigger app_exited failed', err));
+                    this.homey.flow.getTriggerCard('any_app_exited')
+                        .trigger(this, { app_name: appObj.name, app_id: appObj.appId })
+                        .catch(err => this.logger.error('Trigger any_app_exited failed', err));
+                }
+
+                if (appName) {
+                    const appObj = { name: app.name, appId: app.appId, dialId: app.dialId || '' };
+                    this.homey.flow.getTriggerCard('app_started')
+                        .trigger(this, { app_id: appObj, app_name: appObj.name })
+                        .catch(err => this.logger.error('Trigger app_started failed', err));
+                    this.homey.flow.getTriggerCard('any_app_started')
+                        .trigger(this, { app_name: appObj.name, app_id: appObj.appId })
+                        .catch(err => this.logger.error('Trigger any_app_started failed', err));
+                }
+
+                this._prevRunningApp = app;
+            }
+        } catch (err) {
+            this.logger.info('refreshRunningApp ERROR', err);
         }
     }
 

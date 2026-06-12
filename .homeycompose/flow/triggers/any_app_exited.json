@@ -1,0 +1,35 @@
+{
+  "id": "any_app_exited",
+  "title": {
+    "en": "Application has exited"
+  },
+  "titleFormatted": {
+    "en": "[[app_name]] has exited"
+  },
+  "hint": {
+    "en": "This trigger fires when any application stops being visible on the TV."
+  },
+  "tokens": [
+    {
+      "name": "app_name",
+      "type": "string",
+      "title": {
+        "en": "Application name"
+      }
+    },
+    {
+      "name": "app_id",
+      "type": "string",
+      "title": {
+        "en": "Application ID"
+      }
+    }
+  ],
+  "args": [
+    {
+      "type": "device",
+      "name": "device",
+      "filter": "driver_id=Samsung"
+    }
+  ]
+}

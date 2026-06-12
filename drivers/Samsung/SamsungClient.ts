@@ -189,6 +189,17 @@ export class SamsungClientImpl extends SamsungBase implements SamsungClient {
 
                         this._addSocketTimeout();
 
+                        // Subscribe to EdenTV push events for running app detection
+                        try {
+                            this.socket.send(JSON.stringify({
+                                method: 'ms.channel.emit',
+                                params: { event: 'ed.edenTV.get', to: 'host' }
+                            }));
+                            this.logger.verbose('_connection: subscribed to ed.edenTV');
+                        } catch (err: any) {
+                            this.logger.verbose('_connection: ed.edenTV subscribe failed', err);
+                        }
+
                         resolve(true);
                     } else if (data.event === 'ed.installedApp.get') {
                         try {
@@ -199,6 +210,12 @@ export class SamsungClientImpl extends SamsungBase implements SamsungClient {
                                 this.logger.verbose(`_connection: after merge:`, this.getApps());
                             }
                         } catch (err: any) {
+                        }
+                    } else if (data.event === 'ed.edenTV.update') {
+                        this.logger.verbose('EdenTV update:', data.data?.update_type);
+                        if (this.device && typeof (this.device as any).refreshRunningApp === 'function') {
+                            (this.device as any).refreshRunningApp().catch((err: any) =>
+                                this.logger.error('refreshRunningApp on edenTV update failed', err));
                         }
                     }
 

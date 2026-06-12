@@ -1,0 +1,10 @@
+{
+  "type": "string",
+  "title": {
+    "en": "Running app"
+  },
+  "getable": true,
+  "setable": false,
+  "insights": true,
+  "uiComponent": null
+}
