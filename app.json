@@ -47,6 +47,162 @@
   },
   "homeyCommunityTopicId": 10019,
   "flow": {
+    "triggers": [
+      {
+        "id": "any_app_exited",
+        "title": {
+          "en": "Application has exited"
+        },
+        "titleFormatted": {
+          "en": "[[app_name]] has exited"
+        },
+        "hint": {
+          "en": "This trigger fires when any application stops being visible on the TV."
+        },
+        "tokens": [
+          {
+            "name": "app_name",
+            "type": "string",
+            "title": {
+              "en": "Application name"
+            }
+          },
+          {
+            "name": "app_id",
+            "type": "string",
+            "title": {
+              "en": "Application ID"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Samsung"
+          }
+        ]
+      },
+      {
+        "id": "any_app_started",
+        "title": {
+          "en": "Application has started"
+        },
+        "titleFormatted": {
+          "en": "[[app_name]] has started"
+        },
+        "hint": {
+          "en": "This trigger fires when any application becomes visible on the TV."
+        },
+        "tokens": [
+          {
+            "name": "app_name",
+            "type": "string",
+            "title": {
+              "en": "Application name"
+            }
+          },
+          {
+            "name": "app_id",
+            "type": "string",
+            "title": {
+              "en": "Application ID"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Samsung"
+          }
+        ]
+      },
+      {
+        "id": "app_exited",
+        "title": {
+          "en": "App exited"
+        },
+        "titleFormatted": {
+          "en": "[[app_id]] exited"
+        },
+        "hint": {
+          "en": "This trigger fires when the selected app stops being visible on the TV."
+        },
+        "tokens": [
+          {
+            "name": "app_name",
+            "type": "string",
+            "title": {
+              "en": "Application name"
+            }
+          },
+          {
+            "name": "app_id",
+            "type": "string",
+            "title": {
+              "en": "Application ID"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Samsung"
+          },
+          {
+            "name": "app_id",
+            "type": "autocomplete",
+            "placeholder": {
+              "en": "Select app..."
+            }
+          }
+        ]
+      },
+      {
+        "id": "app_started",
+        "title": {
+          "en": "App started"
+        },
+        "titleFormatted": {
+          "en": "[[app_id]] started"
+        },
+        "hint": {
+          "en": "This trigger fires when the selected app becomes visible on the TV."
+        },
+        "tokens": [
+          {
+            "name": "app_name",
+            "type": "string",
+            "title": {
+              "en": "Application name"
+            }
+          },
+          {
+            "name": "app_id",
+            "type": "string",
+            "title": {
+              "en": "Application ID"
+            }
+          }
+        ],
+        "args": [
+          {
+            "type": "device",
+            "name": "device",
+            "filter": "driver_id=Samsung"
+          },
+          {
+            "name": "app_id",
+            "type": "autocomplete",
+            "placeholder": {
+              "en": "Select app..."
+            }
+          }
+        ]
+      }
+    ],
     "conditions": [
       {
         "id": "is_app_running",
@@ -321,7 +477,8 @@
         "channel_up",
         "volume_down",
         "channel_down",
-        "volume_mute"
+        "volume_mute",
+        "running_app"
       ],
       "id": "Samsung",
       "name": {
@@ -446,5 +603,17 @@
         }
       ]
     }
-  ]
+  ],
+  "capabilities": {
+    "running_app": {
+      "type": "string",
+      "title": {
+        "en": "Running app"
+      },
+      "getable": true,
+      "setable": false,
+      "insights": true,
+      "uiComponent": null
+    }
+  }
 }
