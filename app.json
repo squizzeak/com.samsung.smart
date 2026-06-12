@@ -207,7 +207,7 @@
       {
         "id": "any_app_running",
         "title": {
-          "en": "Any application is running"
+          "en": "!{{Any application is running|No application is running}}"
         },
         "tokens": [
           {
