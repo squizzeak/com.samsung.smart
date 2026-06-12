@@ -45,6 +45,17 @@ class SamsungSmartApp extends Homey.App {
             .getArgument('app_id')
             .registerAutocompleteListener((query, args) => args.device.onAppAutocomplete(query, args));
 
+        this.homey.flow.getConditionCard('any_app_running')
+            .registerRunListener(async (args, state) => {
+                const app = await args.device.samsungClient.getRunningApp();
+                if (app) {
+                    await state.setToken('app_name', app.name);
+                    await state.setToken('app_id', app.appId);
+                    return true;
+                }
+                return false;
+            });
+
         this.homey.flow.getActionCard('launch_app')
             .registerRunListener(args => args.device.samsungClient.launchApp(args.app_id))
             .getArgument('app_id')

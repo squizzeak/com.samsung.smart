@@ -205,6 +205,35 @@
     ],
     "conditions": [
       {
+        "id": "any_app_running",
+        "title": {
+          "en": "Any application is running"
+        },
+        "tokens": [
+          {
+            "name": "app_name",
+            "type": "string",
+            "title": {
+              "en": "Application name"
+            }
+          },
+          {
+            "name": "app_id",
+            "type": "string",
+            "title": {
+              "en": "Application ID"
+            }
+          }
+        ],
+        "args": [
+          {
+            "name": "device",
+            "type": "device",
+            "filter": "driver_id=Samsung"
+          }
+        ]
+      },
+      {
         "id": "is_app_running",
         "title": {
           "en": "Is app !{{running|not running}}"
