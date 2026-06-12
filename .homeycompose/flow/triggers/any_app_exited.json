@@ -4,7 +4,7 @@
     "en": "Application has exited"
   },
   "titleFormatted": {
-    "en": "[[app_name]] has exited"
+    "en": "Application has exited"
   },
   "hint": {
     "en": "This trigger fires when any application stops being visible on the TV."

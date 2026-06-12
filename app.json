@@ -54,7 +54,7 @@
           "en": "Application has exited"
         },
         "titleFormatted": {
-          "en": "[[app_name]] has exited"
+          "en": "Application has exited"
         },
         "hint": {
           "en": "This trigger fires when any application stops being visible on the TV."
@@ -89,7 +89,7 @@
           "en": "Application has started"
         },
         "titleFormatted": {
-          "en": "[[app_name]] has started"
+          "en": "Application has started"
         },
         "hint": {
           "en": "This trigger fires when any application becomes visible on the TV."

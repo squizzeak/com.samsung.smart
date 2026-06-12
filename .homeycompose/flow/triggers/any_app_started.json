@@ -4,7 +4,7 @@
     "en": "Application has started"
   },
   "titleFormatted": {
-    "en": "[[app_name]] has started"
+    "en": "Application has started"
   },
   "hint": {
     "en": "This trigger fires when any application becomes visible on the TV."
